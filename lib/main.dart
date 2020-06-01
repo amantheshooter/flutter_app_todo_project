@@ -1,6 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutterappsecondproject/models/TodoModel.dart';
-import 'package:http/http.dart';
 
 void main() {
   runApp(MyApp());
@@ -62,9 +62,24 @@ class _MyHomePageState extends State<MyHomePage> {
             List<MyTodoModel> data = snapshot.data;
             return _jobsListView(data);
           } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
+            return Center(child: Column(
+              children: <Widget>[
+                Text('Connection Error!'),
+                FlatButton(
+                  color: Colors.blue,
+                  textColor: Colors.white,
+                  onPressed: () {
+
+                  },
+                  child: Text(
+                    "Retry",
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                )
+              ],
+            ));
           }
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         },
       ),
     );
@@ -90,4 +105,15 @@ class _MyHomePageState extends State<MyHomePage> {
           color: Colors.blue[500],
         ),
       );
+
+  checkInternet() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('connected');
+      }
+    } on SocketException catch (_) {
+      print('not connected');
+    }
+  }
 }
